@@ -1,6 +1,6 @@
 ---
 - name: Configure MySQL in Ubuntu
-  hosts: localhost
+  hosts: test_servers
   become_method: sudo
   become: yes
   remote_user: root
