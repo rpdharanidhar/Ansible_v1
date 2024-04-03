@@ -1,0 +1,79 @@
+---
+- name: Host A HTML page with Apache2 with mysql connection
+  hosts: localhost
+  become_method: sudo
+  become: yes
+  vars:
+    ansible_become_password: "mg"
+    mysql_root_password: "dharani"
+    mysql_db_user: "dharani"
+    mysql_db_password: "dharani"
+    mysql_host: localhost
+    mysql_port: 3306
+    mysql_database: "test"
+    mysql_password: "dharani"
+    mysql_user: root
+    mysql_data:
+      - name: user
+        email: user@gmail.com
+        password: user@1234
+      - name: user1
+        email: user1@gmail.com
+        password: user@12341
+
+  tasks:
+    - name: Install Apache2
+      become: yes
+      package:
+        name: apache2
+        state: present
+    - name: root directory exists
+      file:
+        path: /var/www/html
+        state: directory
+      become: yes
+    - name: Copy HTML file to remote host
+      copy:
+        src: app.js
+        dest: /var/www/html/app.js
+    - name: Install Apache2
+      become: yes
+      package:
+        name: apache2
+        state: present
+    - name: Start Apache service
+      become: yes
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Install MySQL Python package
+      become: true
+      apt:
+        name: python3-mysqldb
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Set MySQL root password
+      mysql_user:
+        login_user: "{{ mysql_user }}"
+        login_password: "{{ mysql_root_password }}"
+        password: "{{ mysql_root_password }}"
+        host: localhost
+        name: root
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
+    - name: Create database
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: "{{ mysql_database }}"
+
+    - name: Insert data into MySQL
+      mysql_db:
+        login_user: "{{ mysql_user }}"
+        login_password: "{{ mysql_password }}"
+        database: "{{ mysql_database }}"
+        query: "INSERT INTO '{{ mysql_database }}' (name, email, password) VALUES ('{{ item.name }}', '{{ item.email }}', '{{ item.password }}')"
+      with_items: "{{ mysql_data }}"

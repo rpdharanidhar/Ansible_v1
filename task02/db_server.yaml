@@ -1,0 +1,60 @@
+---
+- name: Configure MySQL in Ubuntu
+  hosts: localhost
+  become_method: sudo
+  become: yes
+  vars:
+    ansible_become_password: "mg"
+    mysql_root_password: dharani
+    mysql_user: dharani
+    mysql_user_password: dharani
+    mysql_db: people
+  tasks:
+    - name: Install MySQL
+      apt:
+        update_cache: yes
+        name:
+          - mysql-server
+          - mysql-client
+          - php
+          - php-mysql
+        state: present
+
+    - name: Install PyMySQL
+      pip:
+        name: pymysql
+        state: present
+
+    - name: Secure MySQL installation
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        host: localhost
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: root
+        login_password: ""
+
+    - name: Create a database
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create a MySQL user
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_user_password }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+      
+    - name: Insert data into MySQL table
+      mysql_query:
+        login_user: "{{ mysql_user }}"
+        login_password: "{{ mysql_user_password }}"
+        login_host: localhost
+        login_port: 3306
+        login_db: "{{ mysql_db }}"
+        query: "INSERT IGNORE INTO people (email, password) VALUES ('user1@gmail.com', 'user@12341');"
