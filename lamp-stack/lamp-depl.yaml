@@ -3,8 +3,8 @@
   hosts: localhost
   become_method: sudo
   become: yes
+  remote_user: root
   vars:
-    ansible_become_password: "mg"
     mysql_root_password: dharani
     mysql_user: dharani
     mysql_user_password: dharani
@@ -58,3 +58,50 @@
         login_port: 3306
         login_db: "{{ mysql_db }}"
         query: "INSERT IGNORE INTO people (email, password) VALUES ('user1@gmail.com', 'user@12341');"
+
+    - name: Install Apache
+      package:
+        name: apache2
+        state: present
+
+    - name: Start Apache Service
+      service:
+        name: apache2
+        state: started
+        enabled: true
+
+    - name: Copy index.html and index.php files
+      copy:
+        src: "{{ item.src }}"
+        dest: /var/www/html/"{{ item.dest }}"
+      with_items:
+      - { src: "success.html", dest: "success.html.html" }
+      - { src: "index.php", dest: "index.php" }
+      
+
+    - name: Restart Apache Service
+      service:
+        name: apache2
+        state: started
+        enabled: true
+    
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install HAProxy
+      package:
+        name: haproxy
+        state: present
+
+    - name: Configure HAProxy
+      template:
+        src: haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+      notify: Restart HAProxy
+      
+  handlers:
+    - name: Restart HAProxy
+      service:
+        name: haproxy
+        state: restarted
