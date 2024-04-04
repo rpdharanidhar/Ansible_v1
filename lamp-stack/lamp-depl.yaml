@@ -3,7 +3,8 @@
   hosts: test_servers
   become_method: sudo
   become: yes
-  remote_user: root
+  become: true
+  # remote_user: root
   vars:
     mysql_root_password: dharani
     mysql_user: dharani
@@ -18,21 +19,26 @@
           - mysql-client
           - php
           - php-mysql
+          - pip
         state: present
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
 
     - name: Install PyMySQL
       pip:
         name: pymysql
         state: present
 
-    - name: Secure MySQL installation
-      mysql_user:
-        name: root
-        password: "{{ mysql_root_password }}"
-        host: localhost
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        login_user: root
-        login_password: ""
+    # - name: Secure MySQL installation
+    #   mysql_user:
+    #     name: root
+    #     password: "{{ mysql_root_password }}"
+    #     hosts: test_servers
+    #     login_unix_socket: /var/run/mysqld/mysqld.sock
+    #     login_user: root
+    #     login_password: ""
 
     - name: Create a database
       mysql_db:
@@ -49,7 +55,28 @@
         state: present
         login_user: root
         login_password: "{{ mysql_root_password }}"
-      
+
+    - name: Create MySQL table
+      become: true
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: "{{ mysql_db }}"
+        state: present
+
+    - name: Create 'people' table
+      become: true
+      mysql_query:
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        # mysql_db: "{{ mysql_db }}"
+        query: >
+          CREATE TABLE IF NOT EXISTS people.people (
+            email VARCHAR(255) PRIMARY KEY,
+            password VARCHAR(255) NOT NULL
+          )
+
     - name: Insert data into MySQL table
       mysql_query:
         login_user: "{{ mysql_user }}"
@@ -75,7 +102,7 @@
         src: "{{ item.src }}"
         dest: /var/www/html/"{{ item.dest }}"
       with_items:
-      - { src: "success.html", dest: "success.html.html" }
+      - { src: "index.html", dest: "index.html" }
       - { src: "index.php", dest: "index.php" }
       
 
@@ -101,6 +128,11 @@
       notify: Restart HAProxy
       
   handlers:
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted
+        
     - name: Restart HAProxy
       service:
         name: haproxy

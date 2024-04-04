@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Login</h2>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br>
         <label for="password">Password:</label><br>
@@ -31,8 +31,11 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
 
+        // Hash the password before comparing
+        $hashed_password = md5($password);
+
         $stmt = $conn->prepare("SELECT * FROM users WHERE email=? AND password=?");
-        $stmt->bind_param("ss", $email, $password);
+        $stmt->bind_param("ss", $email, $hashed_password);
         $stmt->execute();
         $result = $stmt->get_result();
 
