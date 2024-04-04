@@ -7,10 +7,10 @@ ok: [localhost]
 TASK [Install MySQL] ***********************************************************
 ok: [localhost]
 
-TASK [Install PyMySQL] *********************************************************
+TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
-TASK [Secure MySQL installation] ***********************************************
+TASK [Install PyMySQL] *********************************************************
 ok: [localhost]
 
 TASK [Create a database] *******************************************************
@@ -19,52 +19,21 @@ ok: [localhost]
 TASK [Create a MySQL user] *****************************************************
 ok: [localhost]
 
-TASK [Insert data into MySQL table] ********************************************
+TASK [Create MySQL table] ******************************************************
 ok: [localhost]
 
-PLAY RECAP *********************************************************************
-localhost                  : ok=7    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+TASK [Create 'people' table] ***************************************************
+changed: [localhost]
 
-
-PLAY [Configure Web Servers] ***************************************************
-
-TASK [Gathering Facts] *********************************************************
+TASK [Insert data into MySQL table] ********************************************
 ok: [localhost]
 
 TASK [Install Apache] **********************************************************
 ok: [localhost]
 
 TASK [Start Apache Service] ****************************************************
-ok: [localhost]
-
-TASK [Copy index.html] *********************************************************
-ok: [localhost] => (item={'src': 'success.html', 'dest': 'success.html.html'})
-changed: [localhost] => (item={'src': 'index.php', 'dest': 'index.php'})
-
-TASK [Restart Apache Service] **************************************************
-ok: [localhost]
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Unable to start service apache2: Job for apache2.service failed because the control process exited with error code.\nSee \"systemctl status apache2.service\" and \"journalctl -xeu apache2.service\" for details.\n"}
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=12   changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-
-
-PLAY [Configure Load Balancer Servers] *****************************************
-
-TASK [Gathering Facts] *********************************************************
-ok: [localhost]
-
-TASK [Install HAProxy] *********************************************************
-ok: [localhost]
-
-TASK [Configure HAProxy] *******************************************************
-ok: [localhost]
-
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
-
-TASK [Ensure HAProxy service is running] ***************************************
-ok: [localhost]
-
-PLAY RECAP *********************************************************************
-localhost                  : ok=17   changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=10   changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
 
