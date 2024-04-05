@@ -1,0 +1,69 @@
+
+PLAY [Run Terraform] ***********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [Install unzip package via ansible inbuilt cmd] ***************************
+ok: [localhost]
+
+TASK [Install unzip package via apt cmd] ***************************************
+ok: [localhost]
+
+TASK [Execute update command] **************************************************
+changed: [localhost]
+
+TASK [Execute teraform installation command] ***********************************
+changed: [localhost]
+
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
+TASK [Install required packages] ***********************************************
+ok: [localhost] => (item=apt-transport-https)
+ok: [localhost] => (item=ca-certificates)
+ok: [localhost] => (item=curl)
+ok: [localhost] => (item=gnupg-agent)
+ok: [localhost] => (item=software-properties-common)
+
+TASK [Docker Installation step starts here !!] *********************************
+ok: [localhost]
+
+TASK [Add Docker GPG key] ******************************************************
+changed: [localhost]
+
+TASK [Add Docker repository] ***************************************************
+changed: [localhost]
+
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
+TASK [Install Docker CE] *******************************************************
+changed: [localhost]
+
+TASK [Install Docker Compose] **************************************************
+changed: [localhost]
+
+TASK [the mysql installation strts here !!] ************************************
+ok: [localhost] => (item=mysql-server)
+ok: [localhost] => (item=mysql-client)
+ok: [localhost] => (item=pip)
+
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
+TASK [Install PyMySQL] *********************************************************
+ok: [localhost]
+
+TASK [Create a database] *******************************************************
+ok: [localhost]
+
+TASK [Create a MySQL user] *****************************************************
+ok: [localhost]
+
+TASK [Create MySQL database] ***************************************************
+ok: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=19   changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

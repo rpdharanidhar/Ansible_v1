@@ -1,0 +1,116 @@
+---
+- name: Run Terraform
+  hosts: localhost
+  become: yes
+  vars:
+    terraform_version: "1.0.0"
+    terraform_install_dir: "/usr/local/bin"
+    mysql_root_password: dharani
+    mysql_user: dharani
+    mysql_user_password: dharani
+    mysql_db: people
+  tasks:
+    - name: Install unzip package via ansible inbuilt cmd
+      ansible.builtin.package:
+        name: unzip
+        state: present
+
+    - name: Install unzip package via apt cmd
+      apt:
+        name: unzip
+        state: present
+
+    - name: Execute update command
+      ansible.builtin.shell:
+        cmd: sudo apt-get update && sudo apt-get install gnupg software-properties-common
+          
+    - name: Execute teraform installation command
+      ansible.builtin.shell:
+        cmd: sudo apt update && sudo apt-get install terraform
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+      
+    - name: Docker Installation step starts here !!
+      apt:
+        update_cache: yes
+        
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Docker CE
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: the mysql installation strts here !!
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+          - mysql-server
+          - mysql-client
+          - pip
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install PyMySQL
+      pip:
+        name: pymysql
+        state: present
+
+    - name: Create a database
+      become: true
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: "{{ mysql_user }}"
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create a MySQL user
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_user_password }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create MySQL database
+      become: true
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: "{{ mysql_db }}"
+        state: present

@@ -1,8 +1,7 @@
 <?php
     echo "<script>console.log('Reached MYSQL DBl');</script>";
-    echo "Login successful";
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login.php'])) {
-        $servername = "127.0.0.1";
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
+        $servername = "localhost";
         $username = "dharani";
         $password = "dharani";
         $dbname = "people";
