@@ -1,7 +1,8 @@
 <?php
     echo "<script>console.log('Reached MYSQL DBl');</script>";
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login,php'])) {
-        $servername = "localhost";
+    echo "Login successful";
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login.php'])) {
+        $servername = "127.0.0.1";
         $username = "dharani";
         $password = "dharani";
         $dbname = "people";
@@ -45,7 +46,7 @@
                 echo "<script>console.log('Login successful');</script>";
             } else {
                 echo "Invalid email or password";
-                echo "<script>console.log('nvalid email or password');</script>";
+                echo "<script>console.log('Invalid email or password');</script>";
 
             }
         } else {
