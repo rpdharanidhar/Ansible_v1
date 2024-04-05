@@ -7,16 +7,16 @@
 </head>
 <body>
     <h2>Login</h2>
-    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+    <form action="<?php echo $_SERVER['REQUEST_METHOD']; ?>" method="post">
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Login">
+        <input type="submit" value="login">
     </form>
 
     <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST"  && isset($_POST['login'])) {
         $servername = "localhost";
         $username = "dharani";
         $password = "dharani";
@@ -24,18 +24,19 @@
 
         $conn = new mysqli($servername, $username, $password, $dbname);
 
+        echo "<script>console.log('Reached MYSQL DBl');</script>";
+
+
         if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
+            // die("Connection failed: " . $conn->connect_error);
+            echo "<script>console.log('error in connection');</script>";
         }
 
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        // Hash the password before comparing
-        $hashed_password = md5($password);
-
         $stmt = $conn->prepare("SELECT * FROM users WHERE email=? AND password=?");
-        $stmt->bind_param("ss", $email, $hashed_password);
+        $stmt->bind_param("ss", $email, $password);
         $stmt->execute();
         $result = $stmt->get_result();
 

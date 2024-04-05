@@ -11,3 +11,16 @@ Make sure to replace the IP of your remote server in the inventory.ini file and 
 
 ansible-playbook -i inventory.ini lamp-depl.yaml and 
 add the block of cmd to see the log for the last run "|tee logfile.log"
+
+To check the DB validation kindly log in to the MySQL by the following command
+
+*mysql -u dharani -p people*
+
+and enter the password as "dharani"
+
+now,  
+
+SHOW DATBASES;
+USE people;
+SHOW TABLES;
+SELECT * FROM PEOPLE WHERE email

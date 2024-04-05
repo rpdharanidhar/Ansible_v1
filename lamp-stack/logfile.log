@@ -2,38 +2,20 @@
 PLAY [Configure MySQL in Ubuntu] ***********************************************
 
 TASK [Gathering Facts] *********************************************************
-ok: [localhost]
+ok: [polar]
 
 TASK [Install MySQL] ***********************************************************
-ok: [localhost]
+ok: [polar]
 
 TASK [Update apt package cache] ************************************************
-ok: [localhost]
+changed: [polar]
 
 TASK [Install PyMySQL] *********************************************************
-ok: [localhost]
+ok: [polar]
 
 TASK [Create a database] *******************************************************
-ok: [localhost]
-
-TASK [Create a MySQL user] *****************************************************
-ok: [localhost]
-
-TASK [Create MySQL table] ******************************************************
-ok: [localhost]
-
-TASK [Create 'people' table] ***************************************************
-changed: [localhost]
-
-TASK [Insert data into MySQL table] ********************************************
-ok: [localhost]
-
-TASK [Install Apache] **********************************************************
-ok: [localhost]
-
-TASK [Start Apache Service] ****************************************************
-fatal: [localhost]: FAILED! => {"changed": false, "msg": "Unable to start service apache2: Job for apache2.service failed because the control process exited with error code.\nSee \"systemctl status apache2.service\" and \"journalctl -xeu apache2.service\" for details.\n"}
+fatal: [polar]: FAILED! => {"changed": false, "msg": "unable to connect to database, check login_user and login_password are correct or /root/.my.cnf has the credentials. Exception message: (1045, \"Access denied for user '********'@'localhost' (using password: YES)\")"}
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=10   changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+polar                      : ok=4    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
 
