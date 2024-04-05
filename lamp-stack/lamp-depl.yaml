@@ -1,7 +1,7 @@
 ---
 - name: Configure MySQL in Ubuntu
-  hosts: test_servers
-  # hosts: localhost
+  # hosts: test_servers
+  hosts: localhost
   become_method: sudo
   become: yes
   remote_user: root
@@ -17,7 +17,7 @@
         name:
           - mysql-server
           - mysql-client
-          - php
+          - php7.4
           - php-mysql
           - pip
         state: present
@@ -25,6 +25,18 @@
     - name: Update apt package cache
       apt:
         update_cache: yes
+
+    - name: Add PHP PPA
+      command: "add-apt-repository ppa:ondrej/php"
+    
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install PHP 7.4
+      apt:
+        name: php7.4
+        state: present
 
     - name: Install PyMySQL
       pip:
@@ -89,6 +101,12 @@
         state: started
         enabled: true
 
+    - name: Start Apache Service in background
+      ansible.builtin.systemd:
+        name: apache2
+        state: started
+        no_block: yes
+
     - name: Copy index.html and index.php files
       copy:
         src: "{{ item.src }}"
@@ -96,6 +114,8 @@
       with_items:
         - { src: "login.php", dest: "login.php" }
         - { src: "index.html", dest: "index.html" }
+        - { src: "info.php", dest: "info.php" }
+        - { src: "index.php", dest: "index.php" }
 
       
     - name: Restart Apache Service
