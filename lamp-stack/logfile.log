@@ -47,7 +47,7 @@ TASK [Start Apache Service in background] **************************************
 ok: [localhost]
 
 TASK [Copy index.html and index.php files] *************************************
-ok: [localhost] => (item={'src': 'login.php', 'dest': 'login.php'})
+changed: [localhost] => (item={'src': 'login.php', 'dest': 'login.php'})
 ok: [localhost] => (item={'src': 'index.html', 'dest': 'index.html'})
 ok: [localhost] => (item={'src': 'info.php', 'dest': 'info.php'})
 ok: [localhost] => (item={'src': 'index.php', 'dest': 'index.php'})
@@ -73,5 +73,5 @@ TASK [Configure HAProxy] *******************************************************
 ok: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=22   changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=22   changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 

@@ -1,6 +1,6 @@
 <?php
-    // echo "<script>console.log('Reached MYSQL DBl');</script>";
-    echo "<script>console.log('Login successful');</script>";
+    echo "<script>console.log('Reached MYSQL DBl');</script>";
+    // echo "<script>console.log('Login successful');</script>";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         // if ($_SERVER["REQUEST_METHOD"] == "POST") {
