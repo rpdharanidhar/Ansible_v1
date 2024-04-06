@@ -1,5 +1,5 @@
 ---
-- name: Configure MySQL in Ubuntu
+- name: Configure LAMP stact
   # hosts: test_servers
   hosts: localhost
   become_method: sudo
