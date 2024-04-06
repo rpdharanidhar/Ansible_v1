@@ -1,19 +1,29 @@
 <?php
-    echo "<script>console.log('Reached MYSQL DBl');</script>";
+    // echo "<script>console.log('Reached MYSQL DBl');</script>";
+    echo "<script>console.log('Login successful');</script>";
+
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
+        // if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
         $servername = "localhost";
         $username = "dharani";
         $password = "dharani";
         $dbname = "people";
 
+        try{
         $conn = new mysqli($servername, $username, $password, $dbname);
 
+        } catch (Exception $e) {
+        // echo "<script>console.log('.Error: ". $e->getMessage()."')</script>";
+            echo "<script>console.log('.$e.');</script>";
+
+        }
         echo "<script>console.log('Reached MYSQL DBl after the conenction establishment');</script>";
 
 
-            if ($conn->connect_error) {
-                echo "<script>console.log('error in connection');</script>";
-            }
+        if ($conn->connect_error) {
+            echo "<script>console.log('error in connection');</script>";
+        }
 
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -31,7 +41,7 @@
 
         } catch (Exception $e) {
             // echo "<script>console.log('.Error: ". $e->getMessage()."')</script>";
-            echo "<script>console.log('catching block');</script>";
+            echo "<script>console.log('.$e.');</script>";
 
         }
 

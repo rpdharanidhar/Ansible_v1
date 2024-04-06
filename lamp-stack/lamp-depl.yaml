@@ -18,7 +18,7 @@
           - mysql-server
           - mysql-client
           - php7.4
-          - php-mysql
+          - php7.4-mysql
           - pip
         state: present
 
@@ -88,7 +88,7 @@
         login_host: localhost
         login_port: 3306
         login_db: "{{ mysql_db }}"
-        query: "INSERT IGNORE INTO people.users (email, password) VALUES ('user@gmail.com', 'user@1234');"
+        query: "INSERT IGNORE INTO people.users (email, password) VALUES ('user7@gmail.com', 'user@12347');"
 
     - name: Install Apache
       package:
@@ -116,6 +116,9 @@
         - { src: "index.html", dest: "index.html" }
         - { src: "info.php", dest: "info.php" }
         - { src: "index.php", dest: "index.php" }
+        - { src: "basic.php", dest: "basic.php" }
+        - { src: "basic.html", dest: "basic.html" }
+
 
       
     - name: Restart Apache Service
@@ -123,6 +126,17 @@
         name: apache2
         state: started
         enabled: true
+
+    - name: Execute update command
+      ansible.builtin.shell:
+        cmd: sudo a2enmod php7.4
+
+    - name: Restart Apache Service
+      service:
+        name: apache2
+        state: started
+        enabled: true
+          
     
     - name: Update apt package cache
       apt:
