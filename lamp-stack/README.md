@@ -9,7 +9,9 @@ Make sure to replace the IP of your remote server in the inventory.ini file and 
 
 *And run the following command*
 
- - ansible-playbook -i inventory.ini lamp-depl.yaml | tee logfile.log
+ - ansible-playbook -i inventory.ini lamp-depl.yaml --ask-vault-password| tee logfile.log
+
+ *Vault Password is*   "mg"
 
 add the block of cmd to see the log for the last run *"  | tee logfile.log  "*
 

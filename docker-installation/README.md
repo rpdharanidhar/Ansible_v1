@@ -7,4 +7,6 @@ This is a README.md file for the the Docker, Terraform and Mysql DB installation
 
 
 *And run the following command*
- - ansible-playbook -i inventory.ini terraform.yaml
+ - ansible-playbook -i inventory.ini terraform.yaml --ask-vault-password 
+
+*Vault Password is*   "mg"
