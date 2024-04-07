@@ -2,13 +2,8 @@
 - name: Run Terraform
   hosts: localhost
   become: yes
-  vars:
-    terraform_version: "1.0.0"
-    terraform_install_dir: "/usr/local/bin"
-    mysql_root_password: dharani
-    mysql_user: dharani
-    mysql_user_password: dharani
-    mysql_db: people
+  vars_files:
+    - secret.yaml
   tasks:
     - name: Install unzip package via ansible inbuilt cmd
       ansible.builtin.package:
@@ -24,9 +19,25 @@
       ansible.builtin.shell:
         cmd: sudo apt-get update && sudo apt-get install gnupg software-properties-common
           
-    - name: Execute teraform installation command
-      ansible.builtin.shell:
-        cmd: sudo apt update && sudo apt-get install terraform
+    - name: Download Terraform ZIP file
+      get_url:
+        url: "https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip"
+        dest: "/tmp/terraform.zip"
+    
+    - name: Block for installing Terraform from ZIP file and APT command
+      block:
+        - name: Unzip Terraform as try
+          unarchive:
+            src: "/tmp/terraform.zip"
+            dest: "/usr/local/bin"
+            remote_src: yes
+            creates: "/usr/local/bin/terraform"
+            
+      rescue:
+        - name: Install Terraform via APT as catch
+          apt:
+            name: terraform
+            state: present
 
     - name: Update apt package cache
       apt:

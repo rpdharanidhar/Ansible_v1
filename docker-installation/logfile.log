@@ -13,8 +13,11 @@ ok: [localhost]
 TASK [Execute update command] **************************************************
 changed: [localhost]
 
-TASK [Execute teraform installation command] ***********************************
-changed: [localhost]
+TASK [Download Terraform ZIP file as try] **************************************
+ok: [localhost]
+
+TASK [Unzip Terraform] *********************************************************
+skipping: [localhost]
 
 TASK [Update apt package cache] ************************************************
 ok: [localhost]
@@ -30,19 +33,19 @@ TASK [Docker Installation step starts here !!] *********************************
 ok: [localhost]
 
 TASK [Add Docker GPG key] ******************************************************
-changed: [localhost]
+ok: [localhost]
 
 TASK [Add Docker repository] ***************************************************
-changed: [localhost]
+ok: [localhost]
 
 TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
 TASK [Install Docker CE] *******************************************************
-changed: [localhost]
+ok: [localhost]
 
 TASK [Install Docker Compose] **************************************************
-changed: [localhost]
+ok: [localhost]
 
 TASK [the mysql installation strts here !!] ************************************
 ok: [localhost] => (item=mysql-server)
@@ -65,5 +68,5 @@ TASK [Create MySQL database] ***************************************************
 ok: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=19   changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=19   changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
 

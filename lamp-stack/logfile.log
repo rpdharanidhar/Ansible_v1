@@ -1,5 +1,5 @@
 
-PLAY [Configure MySQL in Ubuntu] ***********************************************
+PLAY [Configure LAMP stact] ****************************************************
 
 TASK [Gathering Facts] *********************************************************
 ok: [localhost]
@@ -11,67 +11,3 @@ TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
 TASK [Add PHP PPA] *************************************************************
-changed: [localhost]
-
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
-
-TASK [Install PHP 7.4] *********************************************************
-ok: [localhost]
-
-TASK [Install PyMySQL] *********************************************************
-ok: [localhost]
-
-TASK [Create a database] *******************************************************
-ok: [localhost]
-
-TASK [Create a MySQL user] *****************************************************
-ok: [localhost]
-
-TASK [Create MySQL database] ***************************************************
-ok: [localhost]
-
-TASK [Create 'users' table] ****************************************************
-changed: [localhost]
-
-TASK [Insert data into MySQL table] ********************************************
-ok: [localhost]
-
-TASK [Install Apache] **********************************************************
-ok: [localhost]
-
-TASK [Start Apache Service] ****************************************************
-ok: [localhost]
-
-TASK [Start Apache Service in background] **************************************
-ok: [localhost]
-
-TASK [Copy index.html and index.php files] *************************************
-changed: [localhost] => (item={'src': 'login.php', 'dest': 'login.php'})
-ok: [localhost] => (item={'src': 'index.html', 'dest': 'index.html'})
-ok: [localhost] => (item={'src': 'info.php', 'dest': 'info.php'})
-ok: [localhost] => (item={'src': 'index.php', 'dest': 'index.php'})
-ok: [localhost] => (item={'src': 'basic.php', 'dest': 'basic.php'})
-ok: [localhost] => (item={'src': 'basic.html', 'dest': 'basic.html'})
-
-TASK [Restart Apache Service] **************************************************
-ok: [localhost]
-
-TASK [Execute update command] **************************************************
-changed: [localhost]
-
-TASK [Restart Apache Service] **************************************************
-ok: [localhost]
-
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
-
-TASK [Install HAProxy] *********************************************************
-ok: [localhost]
-
-TASK [Configure HAProxy] *******************************************************
-ok: [localhost]
-
-PLAY RECAP *********************************************************************
-localhost                  : ok=22   changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-

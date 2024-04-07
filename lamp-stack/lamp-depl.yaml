@@ -5,11 +5,8 @@
   become_method: sudo
   become: yes
   remote_user: root
-  vars:
-    mysql_root_password: dharani
-    mysql_user: dharani
-    mysql_user_password: dharani
-    mysql_db: people
+  vars_files:
+    - secret.yaml
   tasks:
     - name: Install MySQL
       apt:
