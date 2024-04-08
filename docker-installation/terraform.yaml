@@ -1,6 +1,6 @@
 ---
 - name: Run Terraform
-  hosts: localhost
+  hosts: test_servers
   become: yes
   vars_files:
     - secret.yaml
@@ -101,13 +101,14 @@
         name: pymysql
         state: present
 
-    - name: Create a database
+    - name: Create a database named 'people'
       become: true
+      become_method: sudo
       mysql_db:
         name: "{{ mysql_db }}"
         state: present
-        login_user: "{{ mysql_user }}"
-        login_password: "{{ mysql_root_password }}"
+        login_user: root
+        login_password: ""
 
     - name: Create a MySQL user
       mysql_user:

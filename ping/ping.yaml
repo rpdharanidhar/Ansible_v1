@@ -1,7 +1,7 @@
 ---
 - name: Ping test fort he servers
-  # hosts: ping_server
-  hosts: localhost
+  hosts: test_servers
+  # hosts: localhost
   tasks:
     - name: Ping the remote server
       ping:

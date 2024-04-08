@@ -1,19 +1,20 @@
 ---
 - name: Configure LAMP stact
-  # hosts: test_servers
-  hosts: localhost
+  hosts: test_servers
+  # hosts: localhost
   become_method: sudo
   become: yes
-  remote_user: root
+  # remote_user: root
   vars_files:
     - secret.yaml
   tasks:
-    - name: Install MySQL
+    - name: Install MySQL ans PHP
       apt:
         update_cache: yes
         name:
           - mysql-server
           - mysql-client
+          - python3-mysqldb
           - php7.4
           - php7.4-mysql
           - pip
@@ -24,8 +25,10 @@
         update_cache: yes
 
     - name: Add PHP PPA
-      command: "add-apt-repository ppa:ondrej/php"
-    
+      apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+
     - name: Update apt package cache
       apt:
         update_cache: yes
@@ -40,12 +43,18 @@
         name: pymysql
         state: present
 
+    - name: Sets the root password
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
     - name: Create a database
       become: true
       mysql_db:
         name: "{{ mysql_db }}"
         state: present
-        login_user: "{{ mysql_user }}"
+        login_user: root
         login_password: "{{ mysql_root_password }}"
 
     - name: Create a MySQL user
@@ -85,7 +94,7 @@
         login_host: localhost
         login_port: 3306
         login_db: "{{ mysql_db }}"
-        query: "INSERT IGNORE INTO people.users (email, password) VALUES ('user7@gmail.com', 'user@12347');"
+        query: "INSERT IGNORE INTO people.users (email, password) VALUES ('user@gmail.com', 'user@1234');"
 
     - name: Install Apache
       package:

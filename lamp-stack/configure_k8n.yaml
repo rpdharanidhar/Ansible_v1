@@ -1,0 +1,69 @@
+---
+- name: Configure Kubernetes Nodes
+  # hosts: kubernetes_nodes
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - docker
+
+    - name: Install Kubernetes components
+      snap:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Add Kubernetes apt repository key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: k8n's repo block
+      block:
+        - name: Add Kubernetes apt repository try block
+          apt_repository:
+            repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+            state: present
+
+      rescue:
+        - name: Add Kubernetes apt repository catch block
+          debug:
+            msg: "this is the catch block for the k8n's repo is failed to add in the ubuntu machine"
+
+    - name: Install required packages
+      apt:
+        name: kubernetes
+        state: present
+
+    - name: Update apt packages again
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Enable and start Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    # - name: Enable and start kubelet service
+    #   systemd:
+    #     name: kubelet
+    #     enabled: yes
+    #     state: started
