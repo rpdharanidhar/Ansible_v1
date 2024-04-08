@@ -19,6 +19,7 @@
         - curl
         - software-properties-common
         - docker
+        - kubernetes
 
     - name: Install Kubernetes components
       snap:

@@ -18,6 +18,7 @@
           - php7.4
           - php7.4-mysql
           - pip
+          - libapache2-mod-php7.4
         state: present
 
     - name: Update apt package cache
@@ -125,8 +126,6 @@
         - { src: "basic.php", dest: "basic.php" }
         - { src: "basic.html", dest: "basic.html" }
 
-
-      
     - name: Restart Apache Service
       service:
         name: apache2
