@@ -1,0 +1,74 @@
+---
+- name: Configure lamp stack on CentOS 7
+  hosts: test_servers
+  become: true
+  vars_files:
+    - secret.yaml
+  tasks:
+    - name: Install MySQL and PHP
+      yum:
+        name:
+          - mysql-server
+          - mysql
+          - MySQL-python
+          - php
+          - php-mysql
+          - python3-pip
+          - httpd
+        state: present
+
+    - name: Start and enable MySQL service
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Set the root password
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/lib/mysql/mysql.sock
+
+    - name: Create a database
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create a MySQL user
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_user_password }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Install Apache
+      package:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Copy index.html and index.php files
+      copy:
+        src: "{{ item.src }}"
+        dest: "/var/www/html/{{ item.dest }}"
+      with_items:
+        - { src: "login.php", dest: "login.php" }
+        - { src: "index.html", dest: "index.html" }
+        - { src: "info.php", dest: "info.php" }
+        - { src: "index.php", dest: "index.php" }
+        - { src: "basic.php", dest: "basic.php" }
+        - { src: "basic.html", dest: "basic.html" }
+
+    - name: Restart Apache service
+      service:
+        name: httpd
+        state: restarted
