@@ -4,10 +4,9 @@ PLAY [Configure LAMP stact] ****************************************************
 TASK [Gathering Facts] *********************************************************
 ok: [localhost]
 
-TASK [Install MySQL] ***********************************************************
-ok: [localhost]
+TASK [Install MySQL and PHP] ***************************************************
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "No package matching 'php7.4' is available"}
 
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
+PLAY RECAP *********************************************************************
+localhost                  : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
 
-TASK [Add PHP PPA] *************************************************************

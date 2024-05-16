@@ -1,0 +1,115 @@
+---
+- name: Run Docker containers
+  # hosts: test_servers
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install unzip package via ansible inbuilt cmd
+      ansible.builtin.package:
+        name: unzip
+        state: present
+
+    - name: Install unzip package via apt cmd
+      apt:
+        name: unzip
+        state: present
+
+    - name: Execute update command
+      become: yes
+      ansible.builtin.shell:
+        cmd: apt-get update && sudo apt-get install gnupg software-properties-common
+        warn: false
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+
+    - name: Docker Installation step starts here !!
+      apt:
+        update_cache: yes
+        
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Docker CE
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Create directory /data
+      file:
+        path: /data
+        state: directory
+        mode: '0777'
+
+    - name: Run chmod 777 cmd for /data directory
+      command: chmod 777 /data
+
+    - name: Run TigerGraph container
+      command: >
+        docker run -d \
+          -p 14022:22 \
+          -p 9000:9000 \
+          -p 14240:14240 \
+          --name tigergraph \
+          --ulimit nofile=1000000:1000000 \
+          -v ~/data:/home/tigergraph/mydata \
+          -v tg-data:/home/tigergraph \
+          -t \
+          tigergraph/tigergraph:latest
+
+    - name: Run JupyterHub container
+      command: >
+        docker run -d \
+          -p 8000:8000 \
+          --name jupyterhub \
+          quay.io/jupyterhub/jupyterhub jupyterhub
+
+    - name: Get IDs of all running containers
+      shell: docker ps -q
+      register: running_containers
+
+    - name: Stop all running containers
+      shell: docker stop {{ item }}
+      with_items: "{{ running_containers.stdout_lines }}"
+
+    - name: List all Docker containers in the exited state
+      command: docker ps -a --filter status=exited --format "{{ '{{' }}.ID{{ '}}' }}"
+      register: docker_exited_containers
+      ignore_errors: true
+
+    # - name: Remove exited Docker containers
+    #   command: docker rm {{ item }}
+    #   loop: "{{ docker_exited_containers.stdout_lines }}"

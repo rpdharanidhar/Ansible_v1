@@ -3,13 +3,13 @@ This is a README.md file for the ping module that is used to check whether the r
 *Clone this repository*
  - git clone https://OCIWolfPack@dev.azure.com/OCIWolfPack/Ansible/_git/Ansible dev
 
- - cd lamp-stack
+ - cd centos7-lamp-stack
 
 Make sure to replace the IP of your remote server in the inventory.ini file and the private-key for your VM instance
 
 *And run the following command*
 
- - ansible-playbook -i inventory.ini lamp-depl.yaml --ask-vault-password| tee logfile.log
+ - ansible-playbook -i inventory.ini centos07-lamp.yaml --ask-vault-password| tee logfile.log
 
  *Vault Password is*   "mg"
 

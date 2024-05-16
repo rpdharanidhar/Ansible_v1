@@ -1,5 +1,5 @@
 
-PLAY [Run Terraform] ***********************************************************
+PLAY [Run Docker containers] ***************************************************
 
 TASK [Gathering Facts] *********************************************************
 ok: [localhost]
@@ -13,21 +13,11 @@ ok: [localhost]
 TASK [Execute update command] **************************************************
 changed: [localhost]
 
-TASK [Download Terraform ZIP file as try] **************************************
-ok: [localhost]
-
-TASK [Unzip Terraform] *********************************************************
-skipping: [localhost]
-
 TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
 TASK [Install required packages] ***********************************************
-ok: [localhost] => (item=apt-transport-https)
-ok: [localhost] => (item=ca-certificates)
-ok: [localhost] => (item=curl)
-ok: [localhost] => (item=gnupg-agent)
-ok: [localhost] => (item=software-properties-common)
+ok: [localhost] => (item=['apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common'])
 
 TASK [Docker Installation step starts here !!] *********************************
 ok: [localhost]
@@ -47,26 +37,31 @@ ok: [localhost]
 TASK [Install Docker Compose] **************************************************
 ok: [localhost]
 
-TASK [the mysql installation strts here !!] ************************************
-ok: [localhost] => (item=mysql-server)
-ok: [localhost] => (item=mysql-client)
-ok: [localhost] => (item=pip)
-
 TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
-TASK [Install PyMySQL] *********************************************************
+TASK [Create directory /data] **************************************************
 ok: [localhost]
 
-TASK [Create a database] *******************************************************
-ok: [localhost]
+TASK [Run chmod 777 cmd for /data directory] ***********************************
+changed: [localhost]
 
-TASK [Create a MySQL user] *****************************************************
-ok: [localhost]
+TASK [Run TigerGraph container] ************************************************
+changed: [localhost]
 
-TASK [Create MySQL database] ***************************************************
-ok: [localhost]
+TASK [Run JupyterHub container] ************************************************
+changed: [localhost]
+
+TASK [Get IDs of all running containers] ***************************************
+changed: [localhost]
+
+TASK [Stop all running containers] *********************************************
+changed: [localhost] => (item=8c280901a223)
+changed: [localhost] => (item=89693ebc78f5)
+
+TASK [List all Docker containers in the exited state] **************************
+changed: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=19   changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+localhost                  : ok=20   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 

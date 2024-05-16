@@ -1,6 +1,138 @@
+# ---
+# - name: Run Terraform
+#   # hosts: test_servers
+#   hosts: localhost
+#   become: yes
+#   vars_files:
+#     - secret.yaml
+#   tasks:
+#     - name: Install unzip package via ansible inbuilt cmd
+#       ansible.builtin.package:
+#         name: unzip
+#         state: present
+
+#     - name: Install unzip package via apt cmd
+#       apt:
+#         name: unzip
+#         state: present
+
+#     - name: Execute update command
+#       ansible.builtin.shell:
+#         cmd: sudo apt-get update && sudo apt-get install gnupg software-properties-common
+          
+#     - name: Download Terraform ZIP file
+#       get_url:
+#         url: "https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip"
+#         dest: "/tmp/terraform.zip"
+    
+#     - name: Block for installing Terraform from ZIP file and APT command
+#       block:
+#         - name: Unzip Terraform as try
+#           unarchive:
+#             src: "/tmp/terraform.zip"
+#             dest: "/usr/local/bin"
+#             remote_src: yes
+#             creates: "/usr/local/bin/terraform"
+            
+#       rescue:
+#         - name: Install Terraform via APT as catch
+#           apt:
+#             name: terraform
+#             state: present
+
+#     - name: Update apt package cache
+#       apt:
+#         update_cache: yes
+
+#     - name: Install required packages
+#       apt:
+#         name: "{{ item }}"
+#         state: present
+#       with_items:
+#           - apt-transport-https
+#           - ca-certificates
+#           - curl
+#           - gnupg-agent
+#           - software-properties-common
+      
+#     - name: Docker Installation step starts here !!
+#       apt:
+#         update_cache: yes
+        
+#     - name: Add Docker GPG key
+#       apt_key:
+#         url: https://download.docker.com/linux/ubuntu/gpg
+#         state: present
+
+#     - name: Add Docker repository
+#       apt_repository:
+#         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+#         state: present
+
+#     - name: Update apt package cache
+#       apt:
+#         update_cache: yes
+#         cache_valid_time: 3600
+
+#     - name: Install Docker CE
+#       apt:
+#         name: docker-ce
+#         state: present
+
+#     - name: Install Docker Compose
+#       apt:
+#         name: docker-compose
+#         state: present
+
+#     - name: the mysql installation strts here !!
+#       apt:
+#         name: "{{ item }}"
+#         state: present
+#       with_items:
+#           - mysql-server
+#           - mysql-client
+#           - pip
+
+#     - name: Update apt package cache
+#       apt:
+#         update_cache: yes
+
+#     - name: Install PyMySQL
+#       pip:
+#         name: pymysql
+#         state: present
+
+#     - name: Create a database named 'people'
+#       become: true
+#       become_method: sudo
+#       mysql_db:
+#         name: "{{ mysql_db }}"
+#         state: present
+#         login_user: root
+#         login_password: "{{ mysql_root_password }}"
+
+#     - name: Create a MySQL user
+#       mysql_user:
+#         name: "{{ mysql_user }}"
+#         password: "{{ mysql_user_password }}"
+#         priv: "{{ mysql_db }}.*:ALL"
+#         state: present
+#         login_user: root
+#         login_password: "{{ mysql_root_password }}"
+
+#     - name: Create MySQL database
+#       become: true
+#       mysql_db:
+#         login_user: root
+#         login_password: "{{ mysql_root_password }}"
+#         name: "{{ mysql_db }}"
+#         state: present
+
+
 ---
-- name: Run Terraform
-  hosts: test_servers
+- name: Run Docker containers
+  # hosts: test_servers
+  hosts: localhost
   become: yes
   vars_files:
     - secret.yaml
@@ -18,26 +150,6 @@
     - name: Execute update command
       ansible.builtin.shell:
         cmd: sudo apt-get update && sudo apt-get install gnupg software-properties-common
-          
-    - name: Download Terraform ZIP file
-      get_url:
-        url: "https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip"
-        dest: "/tmp/terraform.zip"
-    
-    - name: Block for installing Terraform from ZIP file and APT command
-      block:
-        - name: Unzip Terraform as try
-          unarchive:
-            src: "/tmp/terraform.zip"
-            dest: "/usr/local/bin"
-            remote_src: yes
-            creates: "/usr/local/bin/terraform"
-            
-      rescue:
-        - name: Install Terraform via APT as catch
-          apt:
-            name: terraform
-            state: present
 
     - name: Update apt package cache
       apt:
@@ -53,7 +165,7 @@
           - curl
           - gnupg-agent
           - software-properties-common
-      
+
     - name: Docker Installation step starts here !!
       apt:
         update_cache: yes
@@ -83,46 +195,36 @@
         name: docker-compose
         state: present
 
-    - name: the mysql installation strts here !!
-      apt:
-        name: "{{ item }}"
-        state: present
-      with_items:
-          - mysql-server
-          - mysql-client
-          - pip
-
     - name: Update apt package cache
       apt:
         update_cache: yes
 
-    - name: Install PyMySQL
-      pip:
-        name: pymysql
-        state: present
 
-    - name: Create a database named 'people'
-      become: true
-      become_method: sudo
-      mysql_db:
-        name: "{{ mysql_db }}"
-        state: present
-        login_user: root
-        login_password: ""
+    - name: Create directory /data
+      file:
+        path: /data
+        state: directory
+        mode: '0777'
 
-    - name: Create a MySQL user
-      mysql_user:
-        name: "{{ mysql_user }}"
-        password: "{{ mysql_user_password }}"
-        priv: "{{ mysql_db }}.*:ALL"
-        state: present
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
+    - name: Run chmod 777 cmd for /data
+      command: chmod 777 /data
 
-    - name: Create MySQL database
-      become: true
-      mysql_db:
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
-        name: "{{ mysql_db }}"
-        state: present
+    - name: Run TigerGraph container
+      command: >
+        docker run -d
+        -p 14022:22
+        -p 9000:9000
+        -p 14240:14240
+        --name tigergraph
+        --ulimit nofile=1000000:1000000
+        -v ~/data:/home/tigergraph/mydata
+        -v tg-data:/home/tigergraph
+        -t
+        tigergraph/tigergraph:latest
+
+    - name: Run JupyterHub container
+      command: >
+        docker run -d
+        -p 8000:8000
+        --name jupyterhub
+        quay.io/jupyterhub/jupyterhub jupyterhub
