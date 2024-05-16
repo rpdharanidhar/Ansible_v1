@@ -3,6 +3,7 @@
   # hosts: test_servers
   hosts: localhost
   become: yes
+  become_method: sudo
   tasks:
     - name: Install unzip package via ansible inbuilt cmd
       ansible.builtin.package:
@@ -63,6 +64,15 @@
       apt:
         name: docker-compose
         state: present
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
 
     - name: Update apt package cache
       apt:

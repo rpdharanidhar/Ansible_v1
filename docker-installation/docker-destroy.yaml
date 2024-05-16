@@ -3,6 +3,7 @@
   # hosts: test_servers
   hosts: localhost
   become: yes
+  become_method: sudo
   tasks:
     - name: Update apt package cache
       apt:
@@ -12,18 +13,18 @@
       shell: docker ps -q
       register: running_containers
 
-    - name: Stop all running containers
-      shell: docker stop {{ item }}
-      with_items: "{{ running_containers.stdout_lines }}"
+    # - name: Stop all running containers
+    #   shell: docker stop {{ item }}
+    #   with_items: "{{ running_containers.stdout_lines }}"
       
     - name: Get ID of the container
       shell: docker ps -aqf "name=my_container_name"
       register: container_id
 
-    - name: Delete the container
-      docker_container:
-        name: "{{ container_id.stdout }}"
-        state: absent
+    # - name: Delete the container
+    #   docker_container:
+    #     name: "{{ container_id.stdout }}"
+    #     state: absent
 
     - name: List all Docker containers in the exited state
       command: docker ps -a --filter status=exited --format "{{ '{{' }}.ID{{ '}}' }}"
