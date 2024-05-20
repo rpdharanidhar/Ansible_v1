@@ -40,6 +40,12 @@ ok: [localhost]
 TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
+TASK [Ensure Docker service is running] ****************************************
+ok: [localhost]
+
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
 TASK [Create directory /data] **************************************************
 ok: [localhost]
 
@@ -52,16 +58,33 @@ changed: [localhost]
 TASK [Run JupyterHub container] ************************************************
 changed: [localhost]
 
-TASK [Get IDs of all running containers] ***************************************
+TASK [Run Grafana container] ***************************************************
 changed: [localhost]
 
-TASK [Stop all running containers] *********************************************
-changed: [localhost] => (item=8c280901a223)
-changed: [localhost] => (item=89693ebc78f5)
+TASK [Run Prometheus container] ************************************************
+changed: [localhost]
+
+TASK [Run Jenkins container] ***************************************************
+changed: [localhost]
+
+TASK [Run MySql container] *****************************************************
+changed: [localhost]
+
+TASK [Run nginx container] *****************************************************
+changed: [localhost]
+
+TASK [Run Postgres container] **************************************************
+changed: [localhost]
+
+TASK [Run Redis container] *****************************************************
+changed: [localhost]
+
+TASK [Get IDs of all running containers] ***************************************
+changed: [localhost]
 
 TASK [List all Docker containers in the exited state] **************************
 changed: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=20   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=28   changed=13   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 

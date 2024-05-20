@@ -107,13 +107,66 @@
           --name jupyterhub \
           quay.io/jupyterhub/jupyterhub jupyterhub
 
+    - name: Run Grafana container
+      command: >
+        docker run -d \
+          --name=grafana \
+          -p 3000:3000 \
+          grafana/grafana
+
+    - name: Run Prometheus container
+      command: >
+        docker run -d \
+          --name=prometheus \
+          -p 9090:9090 \
+          prom/prometheus
+
+    - name: Run Jenkins container
+      command: >
+        docker run -d \
+          --name=jenkins \
+          -p 8080:8080 \
+          -p 50000:50000 \
+          jenkins/jenkins:lts
+
+    - name: Run MySql container
+      command: >
+        docker run -d \
+          --name=mysql \
+          -p 3306:3306 \
+          -e MYSQL_ROOT_PASSWORD=password \
+          mysql:latest
+
+    - name: Run nginx container
+      command: >
+        docker run -d \
+          --name=nginx \
+          -p 80:80 \
+          nginx:latest
+
+    - name: Run Postgres container
+      command: >
+        docker run -d \
+          --name=postgres \
+          -p 5432:5432 \
+          -e POSTGRES_PASSWORD=password \
+          postgres:latest
+
+    - name: Run Redis container
+      command: >
+        docker run -d \
+          --name=redis \
+          -p 6379:6379 \
+          redis:latest
+
+
     - name: Get IDs of all running containers
       shell: docker ps -q
       register: running_containers
 
-    - name: Stop all running containers
-      shell: docker stop {{ item }}
-      with_items: "{{ running_containers.stdout_lines }}"
+    # - name: Stop all running containers
+    #   shell: docker stop {{ item }}
+    #   with_items: "{{ running_containers.stdout_lines }}"
 
     - name: List all Docker containers in the exited state
       command: docker ps -a --filter status=exited --format "{{ '{{' }}.ID{{ '}}' }}"
