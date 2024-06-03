@@ -21,10 +21,10 @@
       shell: docker ps -aqf "name=my_container_name"
       register: container_id
 
-    - name: Delete the container
-      docker_container:
-        name: "{{ container_id.stdout }}"
-        state: absent
+    # - name: Delete the container
+    #   docker_container:
+    #     name: "{{ container_id.stdout }}"
+    #     state: absent
 
     - name: List all Docker containers in the exited state
       command: docker ps -a --filter status=exited --format "{{ '{{' }}.ID{{ '}}' }}"

@@ -10,11 +10,8 @@ ok: [localhost]
 TASK [Install unzip package via apt cmd] ***************************************
 ok: [localhost]
 
-TASK [Execute update command] **************************************************
-changed: [localhost]
-
 TASK [Update apt package cache] ************************************************
-ok: [localhost]
+changed: [localhost]
 
 TASK [Install required packages] ***********************************************
 ok: [localhost] => (item=['apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common'])
@@ -52,31 +49,16 @@ ok: [localhost]
 TASK [Run chmod 777 cmd for /data directory] ***********************************
 changed: [localhost]
 
-TASK [Run TigerGraph container] ************************************************
+TASK [Create Prometheus configuration directory] *******************************
 changed: [localhost]
 
-TASK [Run JupyterHub container] ************************************************
-changed: [localhost]
-
-TASK [Run Grafana container] ***************************************************
+TASK [Copy Prometheus configuration file] **************************************
 changed: [localhost]
 
 TASK [Run Prometheus container] ************************************************
 changed: [localhost]
 
-TASK [Run Jenkins container] ***************************************************
-changed: [localhost]
-
-TASK [Run MySql container] *****************************************************
-changed: [localhost]
-
-TASK [Run nginx container] *****************************************************
-changed: [localhost]
-
-TASK [Run Postgres container] **************************************************
-changed: [localhost]
-
-TASK [Run Redis container] *****************************************************
+TASK [Run SonarQube container] *************************************************
 changed: [localhost]
 
 TASK [Get IDs of all running containers] ***************************************
@@ -86,5 +68,5 @@ TASK [List all Docker containers in the exited state] **************************
 changed: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=28   changed=13   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=22   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 

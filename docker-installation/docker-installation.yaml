@@ -4,6 +4,9 @@
   hosts: localhost
   become: yes
   become_method: sudo
+  # roles:
+  # - prometheus
+  # - sonarqube
   tasks:
     - name: Install unzip package via ansible inbuilt cmd
       ansible.builtin.package:
@@ -15,11 +18,11 @@
         name: unzip
         state: present
 
-    - name: Execute update command
-      become: yes
-      ansible.builtin.shell:
-        cmd: apt-get update && sudo apt-get install gnupg software-properties-common
-        warn: false
+    # - name: Execute update command
+    #   become: yes
+    #   ansible.builtin.shell:
+    #     cmd: apt-get update && sudo apt-get install gnupg software-properties-common
+    #     warn: false
 
     - name: Update apt package cache
       apt:
@@ -107,6 +110,16 @@
           --name jupyterhub \
           quay.io/jupyterhub/jupyterhub jupyterhub
 
+    - name: Run MongoDB container
+      command: >
+        docker run -d \
+          --name=mongodb \
+          -p 27017:27017 \
+          -v ~/data:/data/db \
+          -e MONGO_INITDB_ROOT_USERNAME=admin \
+          -e MONGO_INITDB_ROOT_PASSWORD=password \
+          mongo:latest
+
     - name: Run Grafana container
       command: >
         docker run -d \
@@ -158,6 +171,48 @@
           --name=redis \
           -p 6379:6379 \
           redis:latest
+
+    global:
+    scrape_interval: 15s
+
+    scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+        - targets: ['localhost:9090']
+
+    - name: Create Prometheus configuration directory
+      file:
+        path: /etc/prometheus
+        state: directory
+
+    - name: Copy Prometheus configuration file
+      copy:
+        src: prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+
+    - name: Run Prometheus container
+      docker_container:
+        name: prometheus
+        image: prom/prometheus
+        state: started
+        restart_policy: always
+        ports:
+          - "9090:9090"
+        volumes:
+          - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    - name: Run SonarQube container
+      docker_container:
+        name: sonarqube
+        image: sonarqube
+        state: started
+        restart_policy: always
+        ports:
+          - "9000:9000"
+        env:
+          SONARQUBE_JDBC_URL: "jdbc:postgresql://db:5432/sonarqube"
+          SONARQUBE_JDBC_USERNAME: "sonar"
+          SONARQUBE_JDBC_PASSWORD: "sonar"
 
 
     - name: Get IDs of all running containers

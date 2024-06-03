@@ -1,0 +1,69 @@
+---
+- name: Configure mysql on Oracle Linux
+  hosts: test_servers
+  become_method: sudo
+  become: true
+  vars_files:
+    - secret.yaml
+  tasks:
+    - name: Install MySQL and related packages
+      yum:
+        name:
+          - mysql-server
+          - mysql
+          - python3-PyMySQL
+          - python3-pip
+        state: present
+
+    - name: Start and enable MySQL
+      systemd:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Set the root password for MySQL
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/lib/mysql/mysql.sock
+        state: present
+        priv: '*.*:ALL,GRANT'
+        host_all: yes
+
+    - name: Create a database
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/lib/mysql/mysql.sock
+
+    - name: Create a MySQL user
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_user_password }}"
+        priv: "{{ mysql_db }}.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/lib/mysql/mysql.sock
+
+    - name: Create 'users' table
+      mysql_query:
+        login_unix_socket: /var/lib/mysql/mysql.sock
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        db: "{{ mysql_db }}"
+        query: >
+          CREATE TABLE IF NOT EXISTS people.users (
+            email VARCHAR(255) PRIMARY KEY,
+            password VARCHAR(255) NOT NULL
+          )
+
+    - name: Insert data into MySQL table
+      mysql_query:
+        login_user: "{{ mysql_user }}"
+        login_password: "{{ mysql_user_password }}"
+        login_host: localhost
+        db: "{{ mysql_db }}"
+        query: "INSERT IGNORE INTO people.users (email, password) VALUES ('user@gmail.com', 'user@1234');"

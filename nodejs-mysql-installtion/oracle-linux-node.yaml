@@ -1,0 +1,42 @@
+---
+- name: Install Node.js on Oracle Linux
+  hosts: test_servers
+  become_method: sudo
+  become: true
+  vars:
+    nodejs_version: "14"
+  vars_files:
+    - secret.yaml
+  tasks:
+    - name: Install EPEL repository
+      yum:
+        name: epel-release
+        state: present
+
+    # - name: Add NodeSource repository for Node.js 16.x
+    #   command: curl -sL https://rpm.nodesource.com/setup_16.x | bash -
+    #   args:
+    #     warn: false
+
+    - name: Add NodeSource repository
+      yum_repository:
+        name: nodesource
+        description: Node.js Packages for Enterprise Linux
+        baseurl: "https://rpm.nodesource.com/pub_{{ nodejs_version }}.x/el/$releasever/$basearch"
+        gpgcheck: yes
+        enabled: yes
+        gpgkey: "https://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL"
+
+
+    - name: Install Node.js
+      yum:
+        name: nodejs
+        state: present
+
+    - name: Verify Node.js installation
+      command: node --version
+      register: node_version
+
+    - name: Display Node.js version
+      debug:
+        msg: "Node.js version installed: {{ node_version.stdout }}"
