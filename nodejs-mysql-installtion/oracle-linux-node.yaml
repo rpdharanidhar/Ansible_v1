@@ -5,6 +5,9 @@
   become: true
   vars:
     nodejs_version: "14"
+    packages:
+      - epel-release
+      - nodejs
   vars_files:
     - secret.yaml
   tasks:
