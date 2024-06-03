@@ -32,12 +32,9 @@ Run the following query to check for the entries in the database
 
 
 =======================================================================================================================
+"*To install the nodejs in the slave machine run the following commands*"
 
-*And run the following command*
-
- - ansible-playbook -i inventory.ini oracle-linux-node.yaml --ask-vault-password | tee logfile.log
-
- *Vault Password is*   "mg"
+ - ansible-playbook -i inventory.ini oracle-linux-node.yaml| tee logfile.log 
 
  add the block of cmd to see the log for the last run *"  | tee logfile.log  "*
 
