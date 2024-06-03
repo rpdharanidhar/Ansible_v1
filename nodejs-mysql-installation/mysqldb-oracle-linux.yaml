@@ -3,9 +3,20 @@
   hosts: test_servers
   become_method: sudo
   become: true
+  vars:
+    nodejs_version: "14"
+    packages:
+      - epel-release
+      - nodejs
   vars_files:
     - secret.yaml
   tasks:
+    - name: Update all packages and apply patches
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+
     - name: Install MySQL and related packages
       yum:
         name:
@@ -67,3 +78,65 @@
         login_host: localhost
         db: "{{ mysql_db }}"
         query: "INSERT IGNORE INTO people.users (email, password) VALUES ('user@gmail.com', 'user@1234');"
+
+    - name: Update all packages and apply patches
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+    
+    - name: Install EPEL repository
+      yum:
+        name: epel-release
+        state: present
+
+    # - name: Add NodeSource repository for Node.js 16.x
+    #   command: curl -sL https://rpm.nodesource.com/setup_16.x | bash -
+    #   args:
+    #     warn: false
+
+    - name: Add NodeSource repository
+      yum_repository:
+        name: nodesource
+        description: Node.js Packages for Enterprise Linux
+        baseurl: "https://rpm.nodesource.com/pub_{{ nodejs_version }}.x/el/$releasever/$basearch"
+        gpgcheck: yes
+        enabled: yes
+        gpgkey: "https://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL"
+
+    - name: Install Node.js
+      yum:
+        name: nodejs
+        state: present
+
+    - name: Verify Node.js installation
+      command: node --version
+      register: node_version
+
+    - name: Display Node.js version
+      debug:
+        msg: "Node.js version installed: {{ node_version.stdout }}"
+
+    - name: Stop and disable Firewalld
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+
+    - name: Flush all iptables rules
+      command: iptables -F
+
+    - name: Update all packages and apply patches
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Remove iptables package
+      yum:
+        name: iptables
+        state: absent
