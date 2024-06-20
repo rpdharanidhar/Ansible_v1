@@ -90,129 +90,136 @@
     - name: Run chmod 777 cmd for /data directory
       command: chmod 777 /data
 
-    - name: Run TigerGraph container
+    # - name: Run TigerGraph container
+    #   command: >
+    #     docker run -d \
+    #       -p 14022:22 \
+    #       -p 9000:9000 \
+    #       -p 14240:14240 \
+    #       --name tigergraph \
+    #       --ulimit nofile=1000000:1000000 \
+    #       -v ~/data:/home/tigergraph/mydata \
+    #       -v tg-data:/home/tigergraph \
+    #       -t \
+    #       tigergraph/tigergraph:latest
+
+    # - name: Run JupyterHub container
+    #   command: >
+    #     docker run -d \
+    #       -p 8000:8000 \
+    #       --name jupyterhub \
+    #       quay.io/jupyterhub/jupyterhub jupyterhub
+
+    # - name: Run MongoDB container
+    #   command: >
+    #     docker run -d \
+    #       --name=mongodb \
+    #       -p 27017:27017 \
+    #       -v ~/data:/data/db \
+    #       -e MONGO_INITDB_ROOT_USERNAME=admin \
+    #       -e MONGO_INITDB_ROOT_PASSWORD=password \
+    #       mongo:latest
+
+    # - name: Run Grafana container
+    #   command: >
+    #     docker run -d \
+    #       --name=grafana \
+    #       -p 3000:3000 \
+    #       grafana/grafana
+
+    # - name: Run Prometheus container
+    #   command: >
+    #     docker run -d \
+    #       --name=prometheus \
+    #       -p 9090:9090 \
+    #       prom/prometheus
+
+    - name: Run rpdharanidhar/node-express-kubernetes-example container
       command: >
         docker run -d \
-          -p 14022:22 \
-          -p 9000:9000 \
-          -p 14240:14240 \
-          --name tigergraph \
-          --ulimit nofile=1000000:1000000 \
-          -v ~/data:/home/tigergraph/mydata \
-          -v tg-data:/home/tigergraph \
-          -t \
-          tigergraph/tigergraph:latest
+          --name=node-express-kubernetes-example \
+          -p 9099:9099 \
+          rpdharanidhar/node-express-kubernetes-example
 
-    - name: Run JupyterHub container
-      command: >
-        docker run -d \
-          -p 8000:8000 \
-          --name jupyterhub \
-          quay.io/jupyterhub/jupyterhub jupyterhub
+    # - name: Run Jenkins container
+    #   command: >
+    #     docker run -d \
+    #       --name=jenkins \
+    #       -p 8080:8080 \
+    #       -p 50000:50000 \
+    #       jenkins/jenkins:lts
 
-    - name: Run MongoDB container
-      command: >
-        docker run -d \
-          --name=mongodb \
-          -p 27017:27017 \
-          -v ~/data:/data/db \
-          -e MONGO_INITDB_ROOT_USERNAME=admin \
-          -e MONGO_INITDB_ROOT_PASSWORD=password \
-          mongo:latest
+    # - name: Run MySql container
+    #   command: >
+    #     docker run -d \
+    #       --name=mysql \
+    #       -p 3306:3306 \
+    #       -e MYSQL_ROOT_PASSWORD=password \
+    #       mysql:latest
 
-    - name: Run Grafana container
-      command: >
-        docker run -d \
-          --name=grafana \
-          -p 3000:3000 \
-          grafana/grafana
+    # - name: Run nginx container
+    #   command: >
+    #     docker run -d \
+    #       --name=nginx \
+    #       -p 80:80 \
+    #       nginx:latest
 
-    - name: Run Prometheus container
-      command: >
-        docker run -d \
-          --name=prometheus \
-          -p 9090:9090 \
-          prom/prometheus
+    # - name: Run Postgres container
+    #   command: >
+    #     docker run -d \
+    #       --name=postgres \
+    #       -p 5432:5432 \
+    #       -e POSTGRES_PASSWORD=password \
+    #       postgres:latest
 
-    - name: Run Jenkins container
-      command: >
-        docker run -d \
-          --name=jenkins \
-          -p 8080:8080 \
-          -p 50000:50000 \
-          jenkins/jenkins:lts
+    # - name: Run Redis container
+    #   command: >
+    #     docker run -d \
+    #       --name=redis \
+    #       -p 6379:6379 \
+    #       redis:latest
 
-    - name: Run MySql container
-      command: >
-        docker run -d \
-          --name=mysql \
-          -p 3306:3306 \
-          -e MYSQL_ROOT_PASSWORD=password \
-          mysql:latest
+    # global:
+    # scrape_interval: 15s
 
-    - name: Run nginx container
-      command: >
-        docker run -d \
-          --name=nginx \
-          -p 80:80 \
-          nginx:latest
+    # scrape_configs:
+    # - job_name: 'prometheus'
+    #   static_configs:
+    #     - targets: ['localhost:9090']
 
-    - name: Run Postgres container
-      command: >
-        docker run -d \
-          --name=postgres \
-          -p 5432:5432 \
-          -e POSTGRES_PASSWORD=password \
-          postgres:latest
+    # - name: Create Prometheus configuration directory
+    #   file:
+    #     path: /etc/prometheus
+    #     state: directory
 
-    - name: Run Redis container
-      command: >
-        docker run -d \
-          --name=redis \
-          -p 6379:6379 \
-          redis:latest
+    # - name: Copy Prometheus configuration file
+    #   copy:
+    #     src: prometheus.yml
+    #     dest: /etc/prometheus/prometheus.yml
 
-    global:
-    scrape_interval: 15s
+    # - name: Run Prometheus container
+    #   docker_container:
+    #     name: prometheus
+    #     image: prom/prometheus
+    #     state: started
+    #     restart_policy: always
+    #     ports:
+    #       - "9090:9090"
+    #     volumes:
+    #       - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
-    scrape_configs:
-    - job_name: 'prometheus'
-      static_configs:
-        - targets: ['localhost:9090']
-
-    - name: Create Prometheus configuration directory
-      file:
-        path: /etc/prometheus
-        state: directory
-
-    - name: Copy Prometheus configuration file
-      copy:
-        src: prometheus.yml
-        dest: /etc/prometheus/prometheus.yml
-
-    - name: Run Prometheus container
-      docker_container:
-        name: prometheus
-        image: prom/prometheus
-        state: started
-        restart_policy: always
-        ports:
-          - "9090:9090"
-        volumes:
-          - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-
-    - name: Run SonarQube container
-      docker_container:
-        name: sonarqube
-        image: sonarqube
-        state: started
-        restart_policy: always
-        ports:
-          - "9000:9000"
-        env:
-          SONARQUBE_JDBC_URL: "jdbc:postgresql://db:5432/sonarqube"
-          SONARQUBE_JDBC_USERNAME: "sonar"
-          SONARQUBE_JDBC_PASSWORD: "sonar"
+    # - name: Run SonarQube container
+    #   docker_container:
+    #     name: sonarqube
+    #     image: sonarqube
+    #     state: started
+    #     restart_policy: always
+    #     ports:
+    #       - "9000:9000"
+    #     env:
+    #       SONARQUBE_JDBC_URL: "jdbc:postgresql://db:5432/sonarqube"
+    #       SONARQUBE_JDBC_USERNAME: "sonar"
+    #       SONARQUBE_JDBC_PASSWORD: "sonar"
 
 
     - name: Get IDs of all running containers

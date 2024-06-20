@@ -2,71 +2,8 @@
 PLAY [Run Docker containers] ***************************************************
 
 TASK [Gathering Facts] *********************************************************
-ok: [localhost]
-
-TASK [Install unzip package via ansible inbuilt cmd] ***************************
-ok: [localhost]
-
-TASK [Install unzip package via apt cmd] ***************************************
-ok: [localhost]
-
-TASK [Update apt package cache] ************************************************
-changed: [localhost]
-
-TASK [Install required packages] ***********************************************
-ok: [localhost] => (item=['apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common'])
-
-TASK [Docker Installation step starts here !!] *********************************
-ok: [localhost]
-
-TASK [Add Docker GPG key] ******************************************************
-ok: [localhost]
-
-TASK [Add Docker repository] ***************************************************
-ok: [localhost]
-
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
-
-TASK [Install Docker CE] *******************************************************
-ok: [localhost]
-
-TASK [Install Docker Compose] **************************************************
-ok: [localhost]
-
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
-
-TASK [Ensure Docker service is running] ****************************************
-ok: [localhost]
-
-TASK [Update apt package cache] ************************************************
-ok: [localhost]
-
-TASK [Create directory /data] **************************************************
-ok: [localhost]
-
-TASK [Run chmod 777 cmd for /data directory] ***********************************
-changed: [localhost]
-
-TASK [Create Prometheus configuration directory] *******************************
-changed: [localhost]
-
-TASK [Copy Prometheus configuration file] **************************************
-changed: [localhost]
-
-TASK [Run Prometheus container] ************************************************
-changed: [localhost]
-
-TASK [Run SonarQube container] *************************************************
-changed: [localhost]
-
-TASK [Get IDs of all running containers] ***************************************
-changed: [localhost]
-
-TASK [List all Docker containers in the exited state] **************************
-changed: [localhost]
+fatal: [ubuntu]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: no such identity: /root/.ssh/id_rsa: No such file or directory\r\nroot@213.35.109.92: Permission denied (publickey).", "unreachable": true}
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=22   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ubuntu                     : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
 

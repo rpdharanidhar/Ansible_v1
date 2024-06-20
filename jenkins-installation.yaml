@@ -1,0 +1,72 @@
+---
+- name: Update the Ubuntu OS and Install the Jenkins
+  # hosts: test_servers
+  hosts: localhost
+  become_method: sudo
+  become: true
+
+  pre_tasks:
+    - name: Ensure Python is installed
+      raw: |
+        which python3 || (apt-get update && apt-get install -y python3)
+      changed_when: false
+
+  tasks:
+  - name: Update and upgrade apt packages
+    apt:
+      update_cache: yes
+      upgrade: dist
+
+  - name: Reboot if necessary
+    reboot:
+      msg: "Reboot initiated by Ansible for OS update"
+      pre_reboot_delay: 60
+      post_reboot_delay: 60
+      reboot_timeout: 3600
+
+  - name: Install Java (Jenkins pre-requisite dependency)
+    apt:
+      name: openjdk-11-jdk
+      state: present
+
+  - name: Add Jenkins repository key to the system
+    apt_key:
+      url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+      state: present
+
+  - name: Add Jenkins repository
+    apt_repository:
+      repo: deb http://pkg.jenkins.io/debian-stable binary/
+      state: present
+
+  - name: Update apt cache with new Jenkins repo
+    apt:
+      update_cache: yes
+
+  - name: Install Jenkins
+    apt:
+      name: jenkins
+      state: latest
+
+  - name: Ensure Jenkins is started and enabled
+    service:
+      name: jenkins
+      state: started
+      enabled: yes
+
+  - name: Get Jenkins initial admin password if the file exists
+    stat:
+      path: /var/lib/jenkins/secrets/initialAdminPassword
+    register: jenkins_initial_password_file
+
+  - name: Fetch Jenkins initial admin password file
+    fetch:
+      src: /var/lib/jenkins/secrets/initialAdminPassword
+      dest: ./initialAdminPassword
+    when: jenkins_initial_password_file.stat.exists
+
+    handlers:
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted

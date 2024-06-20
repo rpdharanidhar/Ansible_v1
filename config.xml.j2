@@ -1,0 +1,15 @@
+<jenkins>
+  <installStateName>INITIAL_SETUP_COMPLETED</installStateName>
+  <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+    <allowAnonymousRead>false</allowAnonymousRead>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+    <allowsSignup>false</allowsSignup>
+    <users>
+      <user>
+        <id>{{ jenkins_admin_user }}</id>
+        <passwordHash>#jbcrypt:{{ jenkins_admin_password_hash }}</passwordHash>
+      </user>
+    </users>
+  </securityRealm>
+</jenkins>

@@ -199,6 +199,10 @@
       apt:
         update_cache: yes
 
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
 
     - name: Create directory /data
       file:
@@ -209,22 +213,33 @@
     - name: Run chmod 777 cmd for /data
       command: chmod 777 /data
 
-    - name: Run TigerGraph container
-      command: >
-        docker run -d
-        -p 14022:22
-        -p 9000:9000
-        -p 14240:14240
-        --name tigergraph
-        --ulimit nofile=1000000:1000000
-        -v ~/data:/home/tigergraph/mydata
-        -v tg-data:/home/tigergraph
-        -t
-        tigergraph/tigergraph:latest
+    # - name: Run TigerGraph container
+    #   command: >
+    #     docker run -d
+    #     -p 14022:22
+    #     -p 9000:9000
+    #     -p 14240:14240
+    #     --name tigergraph
+    #     --ulimit nofile=1000000:1000000
+    #     -v ~/data:/home/tigergraph/mydata
+    #     -v tg-data:/home/tigergraph
+    #     -t
+    #     tigergraph/tigergraph:latest
 
-    - name: Run JupyterHub container
+    # - name: Run JupyterHub container
+    #   command: >
+    #     docker run -d
+    #     -p 8000:8000
+    #     --name jupyterhub
+    #     quay.io/jupyterhub/jupyterhub jupyterhub
+
+    - name: Run SonarQube container
       command: >
         docker run -d
-        -p 8000:8000
-        --name jupyterhub
-        quay.io/jupyterhub/jupyterhub jupyterhub
+        -p 9000:9000
+        --name sonarqube
+        -v sonarqube_data:/opt/sonarqube/data
+        -v sonarqube_extensions:/opt/sonarqube/extensions
+        -v sonarqube_logs:/opt/sonarqube/logs
+        -v sonarqube_temp:/opt/sonarqube/temp
+        sonarqube:latest
