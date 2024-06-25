@@ -2,8 +2,23 @@
 PLAY [Run Docker containers] ***************************************************
 
 TASK [Gathering Facts] *********************************************************
-fatal: [ubuntu]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: no such identity: /root/.ssh/id_rsa: No such file or directory\r\nroot@213.35.109.92: Permission denied (publickey).", "unreachable": true}
+ok: [localhost]
+
+TASK [Install required packages] ***********************************************
+ok: [localhost]
+
+TASK [Install OCI CLI] *********************************************************
+changed: [localhost]
+
+TASK [Download the Google Cloud public signing key] ****************************
+changed: [localhost]
+
+TASK [Add the Kubernetes apt repository] ***************************************
+changed: [localhost]
+
+TASK [Add the Kubernetes apt repository] ***************************************
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to update apt cache: W:https://download.docker.com/linux/ubuntu/dists/focal/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details., W:https://pkg.jenkins.io/debian-stable/binary/Release.gpg: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details., W:Target Packages (Packages) is configured multiple times in /etc/apt/sources.list.d/jenkins.list:1 and /etc/apt/sources.list.d/pkg_jenkins_io_debian_stable.list:1, W:Target Translations (en) is configured multiple times in /etc/apt/sources.list.d/jenkins.list:1 and /etc/apt/sources.list.d/pkg_jenkins_io_debian_stable.list:1, W:https://artifacts.elastic.co/packages/7.x/apt/dists/stable/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details., W:Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/elastic-7.x.list:1 and /etc/apt/sources.list.d/kibana-7.x.list:1, W:Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/elastic-7.x.list:1 and /etc/apt/sources.list.d/kibana-7.x.list:1, W:Target Translations (main/i18n/Translation-en) is configured multiple times in /etc/apt/sources.list.d/elastic-7.x.list:1 and /etc/apt/sources.list.d/kibana-7.x.list:1, W:Target CNF (main/cnf/Commands-amd64) is configured multiple times in /etc/apt/sources.list.d/elastic-7.x.list:1 and /etc/apt/sources.list.d/kibana-7.x.list:1, W:Target CNF (main/cnf/Commands-all) is configured multiple times in /etc/apt/sources.list.d/elastic-7.x.list:1 and /etc/apt/sources.list.d/kibana-7.x.list:1, E:The repository 'https://apt.kubernetes.io kubernetes-xenial Release' does not have a Release file."}
 
 PLAY RECAP *********************************************************************
-ubuntu                     : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=5    changed=3    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
 

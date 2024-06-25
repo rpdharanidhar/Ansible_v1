@@ -1,0 +1,30 @@
+
+PLAY [Update and Install the Jenkins] ******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [168.138.184.191]
+
+TASK [Update apt packages] *****************************************************
+changed: [168.138.184.191]
+
+TASK [Install Java (Jenkins dependency)] ***************************************
+ok: [168.138.184.191]
+
+TASK [Add Jenkins repository key to the system] ********************************
+ok: [168.138.184.191]
+
+TASK [Add the Jenkins Repo] ****************************************************
+changed: [168.138.184.191]
+
+TASK [Update apt cache with new Jenkins repo] **********************************
+changed: [168.138.184.191]
+
+TASK [Install Jenkins] *********************************************************
+ok: [168.138.184.191]
+
+TASK [Ensure Jenkins is started and enabled] ***********************************
+changed: [168.138.184.191]
+
+PLAY RECAP *********************************************************************
+168.138.184.191            : ok=8    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

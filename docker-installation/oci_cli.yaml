@@ -1,0 +1,52 @@
+---
+- name: Run Docker containers
+  # hosts: test_servers
+  hosts: localhost
+  become: yes
+  become_method: sudo
+  tasks:
+
+    - name: Install required packages
+      apt:
+        name:
+          - python3
+          - python3-venv
+          - python3-pip
+          - curl
+          - apt-transport-https
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    - name: Install oci-cli
+      ansible.builtin.shell:
+        sudo -H pip install oci-cli
+
+    - name: Install apt-transport-https and ca-certificates
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+        state: present
+        update_cache: yes
+
+    - name: Download and add Google Cloud public signing key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present

@@ -1,32 +1,16 @@
 
-PLAY [Update the Ubuntu OS and Install the Jenkins] ****************************
+PLAY [Run Docker containers] ***************************************************
 
 TASK [Gathering Facts] *********************************************************
 ok: [localhost]
 
-TASK [Update and upgrade apt packages] *****************************************
+TASK [Install required packages] ***********************************************
+ok: [localhost] => (item=['apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3', 'python3-venv', 'python3-pip', 'curl', 'apt-transport-https', 'curl', 'gnupg', 'lsb-release', 'ca-certificates'])
+
+TASK [Install oci-cli] *********************************************************
 changed: [localhost]
 
-TASK [Install iptables-persistent package] *************************************
-ok: [localhost]
-
-TASK [Allow traffic on port 8080] **********************************************
-ok: [localhost]
-
-TASK [Allow traffic on port 8080] **********************************************
-changed: [localhost]
-
-TASK [Save iptables rules with the netfilter] **********************************
-changed: [localhost]
-
-TASK [Save iptables rules] *****************************************************
-fatal: [localhost]: FAILED! => {"changed": true, "cmd": ["iptables-save", "|", "tee", "/etc/iptables/rules.v4"], "delta": "0:00:00.006407", "end": "2024-06-14 09:26:56.138970", "msg": "non-zero return code", "rc": 1, "start": "2024-06-14 09:26:56.132563", "stderr": "Unknown arguments found on commandline", "stderr_lines": ["Unknown arguments found on commandline"], "stdout": "", "stdout_lines": []}
-...ignoring
-
-TASK [Save iptables rules] *****************************************************
-changed: [localhost]
-
-TASK [Install iptables-persistent package] *************************************
+TASK [Update apt packages] *****************************************************
 ok: [localhost]
 
 TASK [Install Java (Jenkins dependency)] ***************************************
@@ -47,26 +31,48 @@ ok: [localhost]
 TASK [Ensure Jenkins is started and enabled] ***********************************
 ok: [localhost]
 
-TASK [Wait for Jenkins to start] ***********************************************
+TASK [Install unzip package] ***************************************************
 ok: [localhost]
 
-TASK [Get Jenkins initial admin password if the file exists] *******************
+TASK [Execute update command] **************************************************
+changed: [localhost]
+
+TASK [Update apt package cache] ************************************************
 ok: [localhost]
 
-TASK [Fetch Jenkins initial admin password file] *******************************
+TASK [Docker Installation step starts here !!] *********************************
 ok: [localhost]
 
-TASK [Read Jenkins initial admin password] *************************************
+TASK [Add Docker GPG key] ******************************************************
 ok: [localhost]
 
-TASK [Decode Jenkins initial admin password] ***********************************
+TASK [Add Docker repository] ***************************************************
 ok: [localhost]
 
-TASK [Output Jenkins initial admin password] ***********************************
-ok: [localhost] => {
-    "msg": "Jenkins initial admin password: 1e774fbded394fb3909dd91b5e378fbf"
-}
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
+TASK [Install Docker CE] *******************************************************
+ok: [localhost]
+
+TASK [Install Docker Compose] **************************************************
+ok: [localhost]
+
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
+TASK [Ensure Docker service is running] ****************************************
+ok: [localhost]
+
+TASK [Download and add Google Cloud public signing key] ************************
+ok: [localhost]
+
+TASK [Run SonarQube container] *************************************************
+changed: [localhost]
+
+TASK [Run Grafana container] ***************************************************
+changed: [localhost]
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=21   changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+localhost                  : ok=24   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 

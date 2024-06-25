@@ -2,8 +2,28 @@
 PLAY [Remove all the exited Docker containers] *********************************
 
 TASK [Gathering Facts] *********************************************************
-fatal: [ubuntu]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: no such identity: /root/.ssh/id_rsa: No such file or directory\r\nroot@129.150.40.74: Permission denied (publickey).", "unreachable": true}
+ok: [localhost]
+
+TASK [Update apt package cache] ************************************************
+ok: [localhost]
+
+TASK [Get IDs of all running containers] ***************************************
+changed: [localhost]
+
+TASK [Stop all running containers] *********************************************
+changed: [localhost] => (item=a06578441a02)
+changed: [localhost] => (item=0885c6d5e4e9)
+
+TASK [Get ID of the container] *************************************************
+changed: [localhost]
+
+TASK [List all Docker containers in the exited state] **************************
+changed: [localhost]
+
+TASK [Remove exited Docker containers] *****************************************
+changed: [localhost] => (item=a06578441a02)
+changed: [localhost] => (item=0885c6d5e4e9)
 
 PLAY RECAP *********************************************************************
-ubuntu                     : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=7    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 

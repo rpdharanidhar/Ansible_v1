@@ -1,0 +1,12 @@
+---
+- name: Run Docker containers
+  hosts: localhost
+  become: yes
+  become_method: sudo
+  roles:
+    - common
+    - oci_cli
+    - jenkins
+    - docker
+    - sonarqube
+    - grafana

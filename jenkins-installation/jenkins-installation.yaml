@@ -16,26 +16,16 @@
         state: present
         update_cache: yes
 
-    - name: Allow traffic on port 8080
-      ansible.builtin.iptables:
-        chain: INPUT
-        protocol: tcp
-        destination_port: 8080
-        jump: ACCEPT
+    - name: Allow traffic on port 8080 with IPv6
+      ansible.builtin.command: ip6tables -A INPUT -p tcp --dport 8080 -j ACCEPT
 
-    - name: Allow traffic on port 8080
-      ansible.builtin.command: iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+    - name: Save ip6tables rules with the netfilter
+      ansible.builtin.command: ip6tables-save | tee /etc/iptables/rules.v6
+      ignore_errors: yes
 
-    - name: Save iptables rules with the netfilter
-      ansible.builtin.command: netfilter-persistent save
-
-    - name: Save iptables rules
-      ansible.builtin.command: iptables-save | tee /etc/iptables/rules.v4
-      ignore_errors: yes  
-
-    - name: Save iptables rules
+    - name: Restart the netfilter-persistent service
       ansible.builtin.service:
-        name: iptables
+        name: netfilter-persistent
         state: restarted
       ignore_errors: yes
 

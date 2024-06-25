@@ -1,0 +1,4 @@
+---
+- name: Install oci-cli
+  ansible.builtin.command:
+    cmd: sudo -H pip install oci-cli

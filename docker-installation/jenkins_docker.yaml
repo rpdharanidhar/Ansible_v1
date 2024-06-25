@@ -1,11 +1,44 @@
 ---
-- name: Run Docker containers
+- name: Update and Install the Jenkins
   hosts: test_servers
   # hosts: localhost
   become: yes
   become_method: sudo
 
   tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+        
+    - name: Install Java (Jenkins dependency)
+      apt:
+        name: openjdk-21-jdk
+        state: present
+
+    - name: Add Jenkins repository key to the system
+      apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+        state: present
+
+    - name: Add the Jenkins Repo
+      ansible.builtin.command:
+        cmd: sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+    - name: Update apt cache with new Jenkins repo
+      apt:
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: latest
+
+    - name: Ensure Jenkins is started and enabled
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
     - name: Install unzip package via apt cmd
       apt:
         name: unzip
@@ -73,47 +106,8 @@
         docker run -d
         -p 9000:9000
         --name sonarqube
-        --restart unless-stopped 
         -v sonarqube_data:/opt/sonarqube/data
         -v sonarqube_extensions:/opt/sonarqube/extensions
         -v sonarqube_logs:/opt/sonarqube/logs
         -v sonarqube_temp:/opt/sonarqube/temp
         sonarqube:latest
-
-    - name: Run Grafana container
-      command: >
-        docker run -d
-        -p 3000:3000
-        --name grafana
-        --restart unless-stopped 
-        -v grafana_data:/var/lib/grafana
-        grafana/grafana:latest
-
-    - name: Run Jenkins container
-      command: >
-        docker run -d 
-        -p 8080:8080
-        --name jenkins 
-        --restart unless-stopped 
-        -v jenkins_home:/var/jenkins_home 
-        jenkins/jenkins:latest
-
-
-    # - name: Run Clair container
-    #   command: >
-    #     docker run -d
-    #     -p 6060:6060
-    #     -p `6061:6061
-    #     --name clair
-    #     --restart unless-stopped 
-    #     -v ~/clair/config:/config
-    #     -v ~/clair/data:/data
-    #     arminc/clair-local-scan:latest
-
-    # - name: Run Fortify container
-    #   command: >
-    #     docker run -d
-    #     --name fortify
-    #     -v ~/fortify/data:/opt/fortify/data
-    #     -v ~/fortify/config:/opt/fortify/config
-    #     caseyfw/fortify:latest
